@@ -27,8 +27,12 @@
 
 ### Admin Features
 - **Hybrid Authentication**: Email/password signup + optional Solana wallet binding
-- **Admin Dashboard**: Centralized control panel at `/itszaadminlogin`
-- **Wallet Management**: Bind and verify multiple Solana wallets per admin account
+- **Admin Dashboard**: Centralized control panel at `/itszaadminlogin` with dark theme and neon effects
+- **Wallet Management**: Auto-detect Solana wallets with transaction signer verification
+- **User Management**: View all users with search, filter, and pagination (50 items/page)
+- **Wager Management**: Monitor all active wagers with status filtering and quick actions
+- **Dispute Resolution**: Handle contested wagers with force resolve, refund, or mark disputed options
+- **Refund System**: Refund stuck wagers with notes and audit trail through edge functions
 - **Role-Based Access Control**: Three-tier hierarchy (moderator, admin, superadmin) with granular permissions
 - **Comprehensive Audit Logging**: Complete action history with IP tracking and user agent logging
 - **Session Management**: Secure httpOnly cookies with automatic token refresh
@@ -146,9 +150,12 @@ gamegambit/
 │   │   ├── itszaadminlogin/   # Admin panel routes
 │   │   │   ├── login/         # Admin login page
 │   │   │   ├── signup/        # Admin signup page
-│   │   │   ├── dashboard/     # Admin dashboard
+│   │   │   ├── dashboard/     # Admin dashboard with management links
+│   │   │   ├── users/         # User management with search & filter
+│   │   │   ├── wagers/        # Wager management with status filter
+│   │   │   ├── disputes/      # Dispute resolution interface
 │   │   │   ├── profile/       # Admin profile management
-│   │   │   ├── wallet-bindings/ # Wallet management
+│   │   │   ├── wallet-bindings/ # Wallet management with transaction signer
 │   │   │   ├── audit-logs/    # Audit history
 │   │   │   └── unauthorized/  # Access denied page
 │   │   ├── arena/             # Wager creation & matching
@@ -175,7 +182,10 @@ gamegambit/
 │   │   │   ├── useAdminAuth.ts
 │   │   │   ├── useAdminProfile.ts
 │   │   │   ├── useAdminWallet.ts
-│   │   │   └── useAdminSession.ts
+│   │   │   ├── useAdminSession.ts
+│   │   │   ├── useAdminUsers.ts       # User management hook
+│   │   │   ├── useAdminWagers.ts      # Wager & dispute management hooks
+│   │   │   └── useAdminAction.ts      # Admin action execution with edge functions
 │   │   ├── useWagers.ts       # Wager state management
 │   │   ├── useWalletAuth.ts   # Wallet authentication
 │   │   ├── useSolanaProgram.ts # Program interaction
@@ -203,7 +213,8 @@ gamegambit/
 │   │           ├── profile.ts
 │   │           ├── wallets.ts
 │   │           ├── audit.ts
-│   │           └── sessions.ts
+│   │           ├── sessions.ts
+│   │           └── actions.ts # Wager, dispute, player actions integration
 │   │
 │   ├── types/                 # TypeScript definitions
 │   │   ├── admin.ts           # Admin types & interfaces
@@ -294,6 +305,7 @@ Authorization: Bearer <signed_message>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| `POST` | `/api/admin/action` | Execute admin actions (refund, resolve, ban, flag) with edge functions |
 | `POST` | `/api/wagers` | Create a new wager |
 | `POST` | `/api/wagers/[id]/join` | Join existing wager |
 | `POST` | `/api/wagers/[id]/resolve` | Resolve wager with winner |
