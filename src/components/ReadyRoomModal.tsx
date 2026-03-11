@@ -170,7 +170,6 @@ export function ReadyRoomModal({
     // NEW FLOW: Call startGame FIRST, then on-chain deposit
     hasTriggeredTx.current = true;
     triggerGameStartThenDeposit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown]);
 
   // NEW: Start game first (transitions wager to 'voting'), then deposit
